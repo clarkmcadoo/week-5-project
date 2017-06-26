@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Mystery Word Game</title>
+</head>
+<body>
+    <h1>Welcome to the Mystery Word Game!</h1>
+    <h3>{{word}}</h3>
+
+    <form action="/" method="post">
+        <input type="text" name="guess" placeholder="Guess a Letter">
+        <button type="submit">Submit Guess</button>
+    </form>
+
+    <h3>Your guesses (number remaining: {{number}}): {{wrong}}</h3>
+</body>
+</html>
