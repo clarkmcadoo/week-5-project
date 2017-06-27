@@ -19,6 +19,7 @@ app.use(
     resave: true,
     saveUninitialized: true,
     cookie: { maxAge: 600000 }
+
   })
 );
 
@@ -28,6 +29,7 @@ const words = fs
   .split("\n"); //Imports library of words.
 var chosenWordIndex = Math.floor(Math.random() * words.length); //Picks a random number from the library of words length.
 var chosenWord = words[chosenWordIndex]; //generates random word.
+session.generatedWord = chosenWord;
 var mysteryWord = chosenWord.split("");
 var wordOnScreen = [];
 
@@ -41,34 +43,45 @@ function changeDisplay(correctGuess, j) {
 
 var display = wordOnScreen.join(" ");
 
-console.log(mysteryWord, wordOnScreen);
+console.log(mysteryWord, wordOnScreen, display);
 
-var correctGuess = [];
-var wrongGuess = [];
+
+var guessedLetter = [];
 var numberWrongGuessRemain = 10;
+var didYouWin;
+var errorMessage;
 
 //ROUTES---------------------------------//
 
 app.get("/", function(req, res) {
   res.render("index", {
     word: display,
-    wrong: wrongGuess,
-    number: numberWrongGuessRemain
+    wrong: guessedLetter,
+    number: numberWrongGuessRemain,
+    errorMessage: errorMessage
   });
 });
+
 
 app.post("/", function(req, res) {
   var userGuess = req.body.guess.toUpperCase();
 
-  if (typeof userGuess === "string" && userGuess.length === 1) {
+  if (userGuess.length === 1 && userGuess.match(/[A-Z]/)) {
     findTheMatch(userGuess);
+    var errorMessage = false;
+
   } else {
+    errorMessage = true;
     res.redirect("/");
   }
 
   function findTheMatch(letter) {
+    if (guessedLetter.indexOf(letter) >= 0){
+      return res.redirect("/");
+    }
+
     if (mysteryWord.indexOf(letter) == -1) {
-      wrongGuess.push(letter);
+      guessedLetter.push(letter);
       numberWrongGuessRemain = numberWrongGuessRemain - 1;
       res.redirect("/");
     } else {
@@ -76,8 +89,8 @@ app.post("/", function(req, res) {
         if (letter == mysteryWord[i]) {
           changeDisplay(letter, i);
         }
-        //console.log(letter, wordOnScreen);
       }
+      guessedLetter.push(letter);              
       display = wordOnScreen.join(" ");
       res.redirect("/");
     }
