@@ -2,7 +2,7 @@ const express = require("express");
 const mustacheExpress = require("mustache-express");
 const bodyParser = require("body-parser");
 const session = require("express-session");
-const port = process.env.PORT || 9999;
+const port = process.env.PORT || 3000;
 const app = express();
 const fs = require("fs");
 
@@ -19,10 +19,11 @@ app.use(
     resave: true,
     saveUninitialized: true,
     cookie: { maxAge: 600000 }
-
   })
 );
 
+
+//GENERATES RANDOM WORD
 const words = fs
   .readFileSync("/usr/share/dict/words", "utf-8")
   .toUpperCase()
@@ -33,6 +34,7 @@ session.generatedWord = chosenWord;
 var mysteryWord = chosenWord.split("");
 var wordOnScreen = [];
 
+//CREATES DASHES AND FUNCTION TO FILL DASHES WITH CORRECT GUESSES
 for (i = 0; i < mysteryWord.length; i++) {
   wordOnScreen[i] = "_ ";
 }
@@ -42,14 +44,11 @@ function changeDisplay(correctGuess, j) {
 }
 
 var display = wordOnScreen.join(" ");
-
-console.log(mysteryWord, wordOnScreen, display);
-
-
 var guessedLetter = [];
 var numberWrongGuessRemain = 10;
-var didYouWin;
 var errorMessage;
+var didYouWin = " ";
+console.log(mysteryWord);
 
 //ROUTES---------------------------------//
 
@@ -58,20 +57,23 @@ app.get("/", function(req, res) {
     word: display,
     wrong: guessedLetter,
     number: numberWrongGuessRemain,
-    errorMessage: errorMessage
+    errorMessage: errorMessage,
+    winner: didYouWin
   });
-});
 
+  console.log(wordOnScreen.indexOf("_ "));
+
+});
 
 app.post("/", function(req, res) {
   var userGuess = req.body.guess.toUpperCase();
 
   if (userGuess.length === 1 && userGuess.match(/[A-Z]/)) {
     findTheMatch(userGuess);
-    var errorMessage = false;
+    errorMessage = "";
 
   } else {
-    errorMessage = true;
+    errorMessage = "Please choose a letter A-Z.";
     res.redirect("/");
   }
 
@@ -95,6 +97,16 @@ app.post("/", function(req, res) {
       res.redirect("/");
     }
   }
+  if (numberWrongGuessRemain == 0){
+    didYouWin = false;
+    return
+  }
+
+  if (wordOnScreen.indexOf("_ ") < 0){
+    didYouWin = "Congratulations!";
+    return
+  }
+      return res.redirect("/");
 });
 
 //LISTENER------------------------------//

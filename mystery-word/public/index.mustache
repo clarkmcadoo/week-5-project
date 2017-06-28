@@ -12,9 +12,16 @@
 
     <form action="/" method="post">
         <input type="text" name="guess" placeholder="Guess a Letter" minlength="1" maxlength="1">
-        <button type="submit">Submit Guess</button> {{#errorMessage}}<span style="color: red"> Please input a letter A-Z... </span> {{/errorMessage}}
+        <button type="submit">Submit Guess</button> {{#errorMessage}}<span style="color: red"> {{.}} </span> {{/errorMessage}}
     </form>
 
     <h3>Your guesses (number remaining: {{number}}): {{wrong}}</h3>
+
+    {{#winner}}
+    <h3>{{.}}</h3>
+    {{/winner}}
+    {{^winner}}
+    <h3>You Have Lost!</h3>
+    {{/winner}}
 </body>
 </html>
