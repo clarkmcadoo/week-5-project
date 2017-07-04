@@ -13,7 +13,7 @@
     <h3>{{word}}</h3>
 
     <form action="/" method="post">
-        <input type="text" name="guess" placeholder="Guess a Letter" minlength="1" maxlength="1">
+        <input type="text" name="guess" placeholder="Guess a Letter" minlength="1" maxlength="1" id="inputguess">
         <button type="submit">Submit Guess</button> {{#errorMessage}}<span style="color: red"> {{.}} </span> {{/errorMessage}}
     </form>
 

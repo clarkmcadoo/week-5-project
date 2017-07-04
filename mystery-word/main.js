@@ -60,9 +60,6 @@ app.get("/", function(req, res) {
     errorMessage: errorMessage,
     winner: didYouWin
   });
-
-  console.log(wordOnScreen.indexOf("_ "));
-
 });
 
 app.post("/", function(req, res) {
@@ -78,10 +75,7 @@ app.post("/", function(req, res) {
   }
 
   function findTheMatch(letter) {
-    if (guessedLetter.indexOf(letter) >= 0){
-      return res.redirect("/");
-    }
-
+  
     if (mysteryWord.indexOf(letter) == -1) {
       guessedLetter.push(letter);
       numberWrongGuessRemain = numberWrongGuessRemain - 1;
